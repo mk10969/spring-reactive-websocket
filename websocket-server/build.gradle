@@ -1,0 +1,15 @@
+apply plugin: 'org.springframework.boot'
+
+
+bootJar {
+    launchScript()
+    archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
+}
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-integration'
+
+    testImplementation 'org.springframework.integration:spring-integration-test'
+
+}

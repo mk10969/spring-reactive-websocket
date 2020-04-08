@@ -1,0 +1,12 @@
+apply plugin: 'org.springframework.boot'
+
+
+bootJar {
+    launchScript()
+    archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
+}
+
+
+dependencies {
+
+}
