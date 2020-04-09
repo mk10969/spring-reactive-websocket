@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
-import org.springframework.web.reactive.socket.server.WebSocketService;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 
 import java.util.Map;
@@ -21,7 +20,6 @@ public class WebSocketConfiguration {
 
     @Bean
     public HandlerMapping webSocketHandlerMapping() {
-
         // bean名で、Mappingする
         Map<String, WebSocketHandler> map = webSocketHandlers.entrySet().stream()
                 .collect(Collectors.toMap(d -> "/" + d.getKey(), Map.Entry::getValue));
@@ -36,5 +34,5 @@ public class WebSocketConfiguration {
     public WebSocketHandlerAdapter webSocketHandlerAdapter() {
         return new WebSocketHandlerAdapter();
     }
-
+    
 }
