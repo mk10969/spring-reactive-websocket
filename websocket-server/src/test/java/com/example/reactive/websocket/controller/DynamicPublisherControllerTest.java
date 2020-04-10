@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.UnicastProcessor;
 import reactor.core.scheduler.Schedulers;
+import reactor.test.StepVerifier;
 
+import java.time.Duration;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -71,4 +73,106 @@ class DynamicPublisherControllerTest {
         }
     }
 
+    @Test
+    public void givenFluxes_whenZipWithIsInvoked_thenZipWith() throws InterruptedException {
+
+        int min = 1;
+        int max = 1000;
+
+        Flux<Integer> evenNumbers = Flux
+                .range(min, max)
+                .filter(x -> x % 2 == 0);
+
+        Flux<Integer> oddNumbers = Flux
+                .range(min, max)
+                .filter(x -> x % 2 > 0);
+
+
+        Flux<Integer> fluxOfIntegers = evenNumbers
+                .zipWith(oddNumbers, (a, b) -> a * b);
+
+        fluxOfIntegers.subscribe(System.out::println);
+
+
+        Thread.sleep(1000L);
+//       StepVerifier.create(fluxOfIntegers)
+//                .expectNext(2)  // 2 * 1
+//                .expectNext(12) // 4 * 3
+//                .expectComplete()
+//                .verify();
+    }
+
+    @Test
+    public void givenFluxes_whenConcatIsInvoked_thenConcat() throws InterruptedException {
+
+        int min = 1;
+        int max = 10;
+
+        Flux<Integer> evenNumbers = Flux
+                .range(min, max)
+                .filter(x -> x % 2 == 0);
+
+        Flux<Integer> oddNumbers = Flux
+                .range(min, max)
+                .filter(x -> x % 2 > 0);
+
+        Flux<Integer> fluxOfIntegers = Flux.concat(evenNumbers, oddNumbers);
+
+        fluxOfIntegers.log().subscribe(System.out::println);
+
+        Thread.sleep(1000L);
+    }
+
+    @Test
+    public void givenFluxes_whenMergeWithDelayedElementsIsInvoked_thenMergeWithDelayedElements() throws InterruptedException {
+        int min = 1;
+        int max = 5;
+
+        Flux<Integer> evenNumbers = Flux
+                .range(min, max)
+                .filter(x -> x % 2 == 0);
+
+        Flux<Integer> oddNumbers = Flux
+                .range(min, max)
+                .filter(x -> x % 2 > 0);
+
+        Flux<Integer> fluxOfIntegers = Flux.merge(
+                evenNumbers.delayElements(Duration.ofMillis(500L)),
+                oddNumbers.delayElements(Duration.ofMillis(300L)));
+
+        StepVerifier.create(fluxOfIntegers)
+                .expectNext(1)
+                .expectNext(2)
+                .expectNext(3)
+                .expectNext(5)
+                .expectNext(4)
+                .expectComplete()
+                .verify();
+
+        Thread.sleep(1000L);
+
+    }
+
+
+    @Test
+    void test_merge() throws InterruptedException {
+        Flux<Long> evenNumbers = Flux.interval(Duration.ofMillis(100))
+                .map(Long::new);
+
+        Flux<Long> hotPublisher = hotSource.publish()
+                .autoConnect()
+                .publishOn(Schedulers.parallel());
+
+        evenNumbers.mergeWith(hotPublisher)
+                .log()
+                .subscribe(System.out::println);
+
+        hotSource.onNext(1000000L);
+        Thread.sleep(200L);
+        hotSource.onNext(1000000L);
+        Thread.sleep(200L);
+        hotSource.onNext(1000000L);
+        Thread.sleep(10000L);
+
+    }
 }
