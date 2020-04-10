@@ -24,7 +24,6 @@ class DynamicPublisherControllerTest {
     private final UnicastProcessor<Long> hotSource = UnicastProcessor.create(new ConcurrentLinkedQueue<>());
 
 
-    @Test
     void test_mono() throws InterruptedException {
         Flux<Long> hotPublisher = hotSource.publish().autoConnect()
                 .publishOn(Schedulers.parallel());
@@ -72,7 +71,7 @@ class DynamicPublisherControllerTest {
         }
     }
 
-    @Test
+
     public void givenFluxes_whenZipWithIsInvoked_thenZipWith() throws InterruptedException {
 
         int min = 1;
@@ -101,7 +100,7 @@ class DynamicPublisherControllerTest {
 //                .verify();
     }
 
-    @Test
+
     public void givenFluxes_whenConcatIsInvoked_thenConcat() throws InterruptedException {
 
         int min = 1;
@@ -122,7 +121,7 @@ class DynamicPublisherControllerTest {
         Thread.sleep(1000L);
     }
 
-    @Test
+
     public void givenFluxes_whenMergeWithDelayedElementsIsInvoked_thenMergeWithDelayedElements() throws InterruptedException {
         int min = 1;
         int max = 5;
@@ -153,7 +152,6 @@ class DynamicPublisherControllerTest {
     }
 
 
-    @Test
     void test_merge() throws InterruptedException {
         Flux<Long> evenNumbers = Flux.interval(Duration.ofMillis(100))
                 .map(Long::new);

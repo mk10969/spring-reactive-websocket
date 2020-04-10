@@ -12,7 +12,7 @@ public class WebSocketProperties {
     /**
      * 配信頻度。
      */
-    private Long interval = 1000L;
+    private Long interval = 100L;
 
     /**
      * メッセージをログ出力するかどうか。
