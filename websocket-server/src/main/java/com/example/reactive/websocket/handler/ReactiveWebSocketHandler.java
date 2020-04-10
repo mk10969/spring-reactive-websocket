@@ -2,8 +2,8 @@ package com.example.reactive.websocket.handler;
 
 
 import com.example.reactive.websocket.model.Quote;
-import com.example.reactive.websocket.service.HotQuotePublisherService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketSession;
@@ -14,11 +14,12 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Random;
 
+@Slf4j
 @Component("websocket")
 @RequiredArgsConstructor
 public class ReactiveWebSocketHandler implements WebSocketHandler {
 
-    private final HotQuotePublisherService hotPublisherService;
+    private final Flux<Quote> hotPublisher;
 
     private final List<Quote> quotes;
 
@@ -31,15 +32,27 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
         return session.send(Flux.interval(Duration.ofMillis(millisecond))
                 .map(i -> getQuote())
-                .mergeWith(hotPublisherService.getHotPublisher())
+                .mergeWith(hotPublisher)
                 .map(Quote::toString)
-                .map(session::textMessage)
-                .log());
+                .doOnNext(ReactiveWebSocketHandler::log)
+                .map(session::textMessage))
+                .doOnSubscribe(i -> log.info("Subscribe On WebSocket SessionId: {}",
+                        session.getId()))
+                .doOnTerminate(() -> log.info("UnSubscribe On WebSocket SessionId: {}",
+                        session.getId()))
+                .doOnError(ex -> log.error("WebSocket Error: ", ex))
+                ;
     }
 
     private Quote getQuote() {
         int x = random.nextInt(quotes.size());
         return quotes.get(x);
+    }
+
+    private static void log(String message) {
+        if (log.isDebugEnabled()) {
+            log.info("MESSAGE: {}", message);
+        }
     }
 
 }

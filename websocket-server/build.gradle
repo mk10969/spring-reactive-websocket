@@ -8,8 +8,10 @@ bootJar {
 
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-integration'
 
     testImplementation 'org.springframework.integration:spring-integration-test'
+    testImplementation 'io.projectreactor:reactor-test'
 
 }

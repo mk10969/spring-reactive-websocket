@@ -3,7 +3,7 @@ package com.example.reactive.websocket.configuration;
 import com.example.reactive.websocket.model.Quote;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
@@ -13,20 +13,20 @@ import java.io.IOException;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class QuoteProperties {
 
     private static final String path = "classpath:quotes.json";
 
-
-    @Autowired
-    private ResourceLoader resourceLoader;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
+    private final ResourceLoader resourceLoader;
 
     @Bean
-    public List<Quote> quotes() {
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    @Bean
+    public List<Quote> quotes(ObjectMapper objectMapper) {
         try {
             return objectMapper.readValue(readJsonFile(), new TypeReference<>() {
             });

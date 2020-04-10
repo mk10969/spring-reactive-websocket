@@ -26,22 +26,21 @@ class DynamicPublisherControllerTest {
 
     @Test
     void test_mono() throws InterruptedException {
-        Flux<Long> hotPublisher = hotSource.publish()
-                .autoConnect()
-                .publishOn(Schedulers.parallel())
-                .log();
-//                .sample(Duration.ofMillis(100));
+        Flux<Long> hotPublisher = hotSource.publish().autoConnect()
+                .publishOn(Schedulers.parallel());
+        Flux<Long> hotPublisher2 = hotSource.publish().autoConnect()
+                .publishOn(Schedulers.parallel());
+
 
         hotPublisher.subscribe(System.out::println);
-
+//        hotPublisher2.subscribe(System.out::println);
 
         Executors.newSingleThreadExecutor();
         ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
         executor.execute(this::run);
         ScheduledThreadPoolExecutor executor2 = new ScheduledThreadPoolExecutor(2);
         executor2.execute(this::run2);
-
-
+        Thread.sleep(2000L);
         Thread.sleep(10000L);
 
     }
@@ -51,7 +50,7 @@ class DynamicPublisherControllerTest {
             long t = 111111111111111111L;
 //            System.out.println(t);
             try {
-                Thread.sleep(1000L);
+                Thread.sleep(500L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
