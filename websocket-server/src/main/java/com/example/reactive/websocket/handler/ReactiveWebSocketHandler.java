@@ -1,6 +1,7 @@
 package com.example.reactive.websocket.handler;
 
 
+import com.example.reactive.websocket.configuration.WebSocketProperties;
 import com.example.reactive.websocket.model.Quote;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +24,18 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
 
     private final List<Quote> quotes;
 
-    private static final long millisecond = 500L;
+    private final WebSocketProperties webSocketProperties;
 
     private static final Random random = new Random();
 
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        return session.send(Flux.interval(Duration.ofMillis(millisecond))
+        return session.send(Flux.interval(Duration.ofMillis(webSocketProperties.getInterval()))
                 .map(i -> getQuote())
                 .mergeWith(hotPublisher)
                 .map(Quote::toString)
-                .doOnNext(ReactiveWebSocketHandler::log)
+                .doOnNext(this::log)
                 .map(session::textMessage))
                 .doOnSubscribe(i -> log.info("Subscribe On WebSocket SessionId: {}",
                         session.getId()))
@@ -49,8 +50,8 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
         return quotes.get(x);
     }
 
-    private static void log(String message) {
-        if (log.isDebugEnabled()) {
+    private void log(String message) {
+        if (webSocketProperties.isMessageDebug()) {
             log.info("MESSAGE: {}", message);
         }
     }
