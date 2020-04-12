@@ -1,6 +1,8 @@
 package com.example.reactive.websocket.configuration;
 
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.validation.Valid;
@@ -12,28 +14,15 @@ public class WebSocketProperties {
     /**
      * 配信頻度。
      */
-    private Long interval = 100L;
+    @Getter
+    @Setter
+    private long interval = 100L;
 
     /**
      * メッセージをログ出力するかどうか。
      */
-    private Boolean messageDebug = false;
+    @Getter
+    @Setter
+    private boolean messageDebug = false;
 
-
-    public void setInterval(Long interval) {
-        this.interval = interval;
-    }
-
-
-    public Long getInterval() {
-        return this.interval;
-    }
-
-    public void setMessageDebug(Boolean messageDebug) {
-        this.messageDebug = messageDebug;
-    }
-
-    public Boolean isMessageDebug() {
-        return this.messageDebug;
-    }
 }
