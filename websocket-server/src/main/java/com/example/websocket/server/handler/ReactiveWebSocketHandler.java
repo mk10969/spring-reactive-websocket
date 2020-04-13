@@ -1,8 +1,8 @@
-package com.example.reactive.websocket.handler;
+package com.example.websocket.server.handler;
 
 
-import com.example.reactive.websocket.configuration.WebSocketProperties;
-import com.example.reactive.websocket.model.Quote;
+import com.example.websocket.server.WebSocketProperties;
+import com.example.websocket.server.model.Quote;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

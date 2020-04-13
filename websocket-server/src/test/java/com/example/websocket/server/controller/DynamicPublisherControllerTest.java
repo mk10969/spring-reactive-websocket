@@ -1,4 +1,4 @@
-package com.example.reactive.websocket.controller;
+package com.example.websocket.server.controller;
 
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;

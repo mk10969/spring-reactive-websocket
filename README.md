@@ -1,8 +1,17 @@
 # spring-reactive-websocket
 
 
-### websocket-server
+## websocket-server
+
+### Build (executable Jar)
+```
+./gradlew websocket-server:build
+```
+### Run
+```
+java -jar ./
+```
 
 
-### websocket-client
+## websocket-client
 

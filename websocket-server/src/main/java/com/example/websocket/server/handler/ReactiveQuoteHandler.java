@@ -1,7 +1,7 @@
-package com.example.reactive.websocket.handler;
+package com.example.websocket.server.handler;
 
 
-import com.example.reactive.websocket.model.Quote;
+import com.example.websocket.server.model.Quote;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -35,20 +35,18 @@ public class ReactiveQuoteHandler {
 
 
     @Bean
-    RouterFunction<ServerResponse> routes(ReactiveQuoteHandler reactiveQuoteHandler) {
+    RouterFunction<ServerResponse> routes() {
         return RouterFunctions
-                .route(RequestPredicates.GET("/"), reactiveQuoteHandler::ping)
-                .andRoute(RequestPredicates.GET("/quote"), reactiveQuoteHandler::findAll)
-                .andRoute(RequestPredicates.POST("/quote"), reactiveQuoteHandler::register)
-                ;
+                .route(RequestPredicates.GET("/"), this::ping)
+                .andRoute(RequestPredicates.GET("/quote"), this::findAll)
+                .andRoute(RequestPredicates.POST("/quote"), this::put);
     }
 
     private Mono<ServerResponse> ping(ServerRequest request) {
         return Mono.just("ping!")
                 .flatMap(text -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue(text)))
-                ;
+                        .body(BodyInserters.fromValue(text)));
     }
 
     private Mono<ServerResponse> findAll(ServerRequest request) {
@@ -58,11 +56,10 @@ public class ReactiveQuoteHandler {
                 .doOnError(ex -> log.error("http error : ", ex))
                 .onErrorResume(Exception.class, ex -> ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue("internal server error")))
-                ;
+                        .body(BodyInserters.fromValue("internal server error")));
     }
 
-    private Mono<ServerResponse> register(ServerRequest request) {
+    private Mono<ServerResponse> put(ServerRequest request) {
         return request.bodyToMono(String.class)
                 .map(this::mapper)
                 .doOnNext(unicastProcessor::onNext)
@@ -77,8 +74,7 @@ public class ReactiveQuoteHandler {
                         .body(BodyInserters.fromValue("データフォーマットが違います。")))
                 .onErrorResume(Exception.class, ex -> ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue("internal server error")))
-                ;
+                        .body(BodyInserters.fromValue("internal server error")));
     }
 
     private Quote mapper(String data) {

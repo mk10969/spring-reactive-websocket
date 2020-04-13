@@ -13,7 +13,7 @@ allprojects {
 }
 
 subprojects {
-    group = 'com.example.reactive'
+    group = 'com.example.websocket'
     version = '0.0.1-SNAPSHOT'
 
     apply plugin: 'java'

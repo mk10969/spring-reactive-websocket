@@ -1,4 +1,4 @@
-package com.example.reactive.websocket.configuration;
+package com.example.websocket.server;
 
 
 import lombok.Getter;

@@ -1,6 +1,6 @@
-package com.example.reactive.websocket.configuration;
+package com.example.websocket.server.configuration;
 
-import com.example.reactive.websocket.model.Quote;
+import com.example.websocket.server.model.Quote;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

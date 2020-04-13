@@ -37,8 +37,8 @@
         </root>
     </springProfile>
 
-    <!--デフォルト -->
-    <springProfile name="seinou">
+    <!--dev -->
+    <springProfile name="dev">
         <root level="INFO">
             <appender-ref ref="APPLIATION_LOG"/>
         </root>

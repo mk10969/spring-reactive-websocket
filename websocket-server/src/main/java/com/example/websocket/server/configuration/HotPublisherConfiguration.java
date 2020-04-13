@@ -1,6 +1,6 @@
-package com.example.reactive.websocket.configuration;
+package com.example.websocket.server.configuration;
 
-import com.example.reactive.websocket.model.Quote;
+import com.example.websocket.server.model.Quote;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
@@ -19,7 +19,6 @@ public class HotPublisherConfiguration {
     @Bean
     public Flux<Quote> hotPublisher(UnicastProcessor<Quote> processor) {
         return processor.publish().autoConnect();
-//               .doOnCancel(() -> System.out.println("キャンセル"));
     }
 
 }

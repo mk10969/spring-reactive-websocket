@@ -1,6 +1,7 @@
-package com.example.reactive.websocket.configuration;
+package com.example.websocket.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.HandlerMapping;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Configuration
+@EnableConfigurationProperties(WebSocketProperties.class)
 public class WebSocketConfiguration {
 
     @Autowired

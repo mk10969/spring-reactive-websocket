@@ -1,4 +1,4 @@
-package com.example.reactive.websocket.model;
+package com.example.websocket.server.model;
 
 import lombok.Data;
 

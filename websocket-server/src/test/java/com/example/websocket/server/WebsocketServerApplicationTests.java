@@ -1,9 +1,9 @@
-package com.example.reactive.websocket;
+package com.example.websocket.server;
 
 import org.junit.jupiter.api.Test;
 
 
-class WebsocketApplicationTests {
+class WebsocketServerApplicationTests {
 
     @Test
     void contextLoads() {
