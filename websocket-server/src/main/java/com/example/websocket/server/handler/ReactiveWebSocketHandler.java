@@ -3,6 +3,8 @@ package com.example.websocket.server.handler;
 
 import com.example.websocket.server.WebSocketProperties;
 import com.example.websocket.server.model.Quote;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,8 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
 
     private final WebSocketProperties webSocketProperties;
 
+    private final ObjectMapper objectMapper;
+
     private static final Random random = new Random();
 
 
@@ -34,7 +38,7 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
         return session.send(Flux.interval(Duration.ofMillis(webSocketProperties.getInterval()))
                 .map(i -> getQuote())
                 .mergeWith(hotPublisher)
-                .map(Quote::toString)
+                .map(this::toPrettyJson)
                 .doOnNext(this::log)
                 .map(session::textMessage))
                 .doOnSubscribe(i -> log.info("Subscribe On WebSocket SessionId: {}",
@@ -49,6 +53,17 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
         int x = random.nextInt(quotes.size());
         return quotes.get(x);
     }
+
+    private String toPrettyJson(Quote quote) {
+        try {
+            return objectMapper
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(quote);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
 
     private void log(String message) {
         if (webSocketProperties.isMessageDebug()) {

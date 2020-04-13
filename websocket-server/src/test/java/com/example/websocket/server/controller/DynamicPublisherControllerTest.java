@@ -153,8 +153,8 @@ class DynamicPublisherControllerTest {
 
 
     void test_merge() throws InterruptedException {
-        Flux<Long> evenNumbers = Flux.interval(Duration.ofMillis(100))
-                .map(Long::new);
+        Flux<Long> evenNumbers = Flux.interval(Duration.ofMillis(100));
+
 
         Flux<Long> hotPublisher = hotSource.publish()
                 .autoConnect()

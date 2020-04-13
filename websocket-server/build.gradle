@@ -16,3 +16,8 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
 
 }
+
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:deprecation'
+}
