@@ -8,7 +8,6 @@ import reactor.test.StepVerifier;
 
 import java.time.Duration;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,7 +33,6 @@ class DynamicPublisherControllerTest {
         hotPublisher.subscribe(System.out::println);
 //        hotPublisher2.subscribe(System.out::println);
 
-        Executors.newSingleThreadExecutor();
         ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
         executor.execute(this::run);
         ScheduledThreadPoolExecutor executor2 = new ScheduledThreadPoolExecutor(2);

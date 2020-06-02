@@ -35,23 +35,109 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        return session.send(Flux.interval(Duration.ofMillis(webSocketProperties.getInterval()))
-                .map(i -> getQuote())
+        return session.send(quoteFlux1()
+                .mergeWith(quoteFluxY2())
+                .mergeWith(quoteFluxY3())
+                .mergeWith(quoteFluxY4())
                 .mergeWith(hotPublisher)
-                .map(this::toPrettyJson)
                 .doOnNext(this::log)
+                .map(this::toPrettyJson)
                 .map(session::textMessage))
                 .doOnSubscribe(i -> log.info("Subscribe On WebSocket SessionId: {}",
                         session.getId()))
                 .doOnTerminate(() -> log.info("UnSubscribe On WebSocket SessionId: {}",
                         session.getId()))
-                .doOnError(ex -> log.error("WebSocket Error: ", ex))
-                ;
+                .doOnError(ex -> log.error("WebSocket Error: ", ex));
     }
 
-    private Quote getQuote() {
-        int x = random.nextInt(quotes.size());
-        return quotes.get(x);
+
+    private Flux<Quote> quoteFluxZZZ() {
+        return Flux.fromIterable(quotes)
+                .delayElements(Duration.ofMillis(webSocketProperties.getInterval()))
+                .repeat();
+    }
+
+
+    private Flux<Quote> quoteFluxY1() {
+        return Mono.fromCallable(() -> System.currentTimeMillis())
+                .repeat()
+                .map(i -> quotes.get(0))
+                .delayElements(Duration.ofMillis(webSocketProperties.getInterval()));
+    }
+
+    private Flux<Quote> quoteFluxY2() {
+        return Mono.fromCallable(() -> System.currentTimeMillis())
+                .repeat()
+                .map(i -> quotes.get(1))
+                .delayElements(Duration.ofMillis(webSocketProperties.getInterval()));
+    }
+
+    private Flux<Quote> quoteFluxY3() {
+        return Mono.fromCallable(() -> System.currentTimeMillis())
+                .repeat()
+                .map(i -> quotes.get(2))
+                .delayElements(Duration.ofMillis(webSocketProperties.getInterval()));
+    }
+
+    private Flux<Quote> quoteFluxY4() {
+        return Mono.fromCallable(() -> System.currentTimeMillis())
+                .repeat()
+                .map(i -> quotes.get(3))
+                .delayElements(Duration.ofMillis(webSocketProperties.getInterval()));
+    }
+
+
+    private Flux<Quote> quoteFluxX1() {
+        return Flux.<Quote>create(fluxSink -> {
+            while (!fluxSink.isCancelled()) {
+                fluxSink.next(quotes.get(0));
+            }
+        }).delayElements(Duration.ofMillis(webSocketProperties.getInterval())).share();
+    }
+
+    private Flux<Quote> quoteFluxX2() {
+        return Flux.<Quote>create(fluxSink -> {
+            while (!fluxSink.isCancelled()) {
+                fluxSink.next(quotes.get(1));
+            }
+        }).delayElements(Duration.ofMillis(webSocketProperties.getInterval())).share();
+    }
+
+    private Flux<Quote> quoteFluxX3() {
+        return Flux.<Quote>create(fluxSink -> {
+            while (!fluxSink.isCancelled()) {
+                fluxSink.next(quotes.get(2));
+            }
+        }).delayElements(Duration.ofMillis(webSocketProperties.getInterval())).share();
+    }
+
+    private Flux<Quote> quoteFluxX4() {
+        return Flux.<Quote>create(fluxSink -> {
+            while (!fluxSink.isCancelled()) {
+                fluxSink.next(quotes.get(3));
+            }
+        }).delayElements(Duration.ofMillis(webSocketProperties.getInterval())).share();
+    }
+
+
+    private Flux<Quote> quoteFlux1() {
+        return Flux.interval(Duration.ofMillis(webSocketProperties.getInterval()))
+                .map(i -> quotes.get(0));
+    }
+
+    private Flux<Quote> quoteFlux2() {
+        return Flux.interval(Duration.ofMillis(webSocketProperties.getInterval()))
+                .map(i -> quotes.get(1));
+    }
+
+    private Flux<Quote> quoteFlux3() {
+        return Flux.interval(Duration.ofMillis(webSocketProperties.getInterval()))
+                .map(i -> quotes.get(2));
+    }
+
+    private Flux<Quote> quoteFlux4() {
+        return Flux.interval(Duration.ofMillis(webSocketProperties.getInterval()))
+                .map(i -> quotes.get(3));
     }
 
     private String toPrettyJson(Quote quote) {
@@ -65,7 +151,7 @@ public class ReactiveWebSocketHandler implements WebSocketHandler {
     }
 
 
-    private void log(String message) {
+    private void log(Object message) {
         if (webSocketProperties.isMessageDebug()) {
             log.info("MESSAGE: {}", message);
         }

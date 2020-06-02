@@ -34,12 +34,18 @@ subprojects {
         // lombok
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
-        // health check
+
+        // spring boot
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
 
         testImplementation('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }
+        testImplementation 'io.projectreactor:reactor-test'
+
 
 //        // guava
 //        implementation 'com.google.guava:guava:28.1-jre'
@@ -56,4 +62,8 @@ subprojects {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << '-Xlint:deprecation'
+    }
 }

@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    active: dev
+
+
+once:
+  websocket:
+    quates:
+      - りんご
+      - みかん
+      - なし
+
+    interval: 100
+    messageDebug: true

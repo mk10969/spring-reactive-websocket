@@ -17,7 +17,7 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
-public class QuoteProperties {
+public class QuoteConfiguration {
 
     @Value("classpath:quotes.json")
     private Resource resourceFile;
