@@ -33,3 +33,7 @@ out/
 
 ### MyConf ###
 *.log
+/log
+
+.java-version
+
